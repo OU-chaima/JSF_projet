@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Datatable</title>
+    <h:outputStylesheet library="webjars" name="bootstrap/5.3.2/css/bootstrap.css"/>
+
+</h:head>
+<h:body>
+    <center> <h2><h:outputText value="#{messages['welcome']}" /></h2>
+        <h:outputText value="#{userBean.message}" rendered="#{not empty userBean.message}" />
+        <h:outputText value="#{userBean.message1}" rendered="#{not empty userBean.message1}" />
+        <h:messages style="color: red" />
+    </center>
+
+    <h:form>
+        <div class="d-flex justify-content-end mt-2">
+            <h:selectOneMenu value="#{mybean2.selectedLanguage}" styleClass="form-select">
+                <f:selectItem itemLabel="Français" itemValue="fr" />
+                <f:selectItem itemLabel="English" itemValue="en" />
+                <h:commandButton value="OK" action="#{mybean2.changeLanguage}" class="btn btn-primary" />
+            </h:selectOneMenu>
+        </div>
+
+
+    <h:dataTable value="#{userBean.userList}" var="user" border="1" class="table table-success table-striped">
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="#{messages['first']}" />
+            </f:facet>
+            <h:outputText value="#{user.prenom}" rendered="#{not userBean.isUserEditing(user)}" />
+            <h:inputText value="#{user.prenom}" rendered="#{userBean.isUserEditing(user)}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="#{messages['last']}" />
+            </f:facet>
+            <h:outputText value="#{user.nom}" rendered="#{not userBean.isUserEditing(user)}" />
+            <h:inputText value="#{user.nom}" rendered="#{userBean.isUserEditing(user)}" />
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="#{messages['city']}" />
+            </f:facet>
+            <h:outputText value="#{user.ville}" rendered="#{not userBean.isUserEditing(user)}"  />
+            <h:inputText value="#{user.ville}" rendered="#{userBean.isUserEditing(user)}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="#{messages['email']}" />
+            </f:facet>
+            <h:outputText value="#{user.email}" rendered="#{not userBean.isUserEditing(user)}"  />
+            <h:inputText value="#{user.email}" rendered="#{userBean.isUserEditing(user)}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="#{messages['dob']}" />
+            </f:facet>
+            <h:outputText value="#{user.date_naissance}" rendered="#{not userBean.isUserEditing(user)}" />
+            <h:inputText value="#{user.date_naissance}" rendered="#{userBean.isUserEditing(user)}" />
+        </h:column>
+        <h:column>
+            <f:facet name="header">Action</f:facet>
+            <h:commandButton value="#{messages['edit']}"  action="#{userBean.toggleEditUser(user)}" class="btn btn-secondary"/>
+            <h:commandButton value="#{messages['delete']}" action="#{userBean.deleteuser(user.email)}" Class="btn btn-secondary"/>
+        </h:column>
+
+    </h:dataTable>
+        <h:form rendered="#{userBean.showAddUserForm}" prependId="false">
+
+            <h:outputLabel for="prenom">#{messages['first']}:</h:outputLabel>
+            <h:inputText id="prenom" value="#{userBean.newUser.prenom}" required="true">
+                <f:validator validatorId="prenomValidator" />
+            </h:inputText>
+            <h:message for="prenom" style="color: red" />
+
+            <h:outputLabel for="nom">#{messages['last']}:</h:outputLabel>
+            <h:inputText id="nom" value="#{userBean.newUser.nom}" required="true">
+                <f:validator validatorId="nomValidator" />
+            </h:inputText>
+            <h:message for="nom" style="color: red" />
+
+            <h:outputLabel for="ville">#{messages['city']}:</h:outputLabel>
+            <h:inputText id="ville" value="#{userBean.newUser.ville}" required="true">
+                <f:validator validatorId="villeValidator" />
+            </h:inputText>
+            <h:message for="ville" style="color: red" />
+
+            <h:outputLabel for="email">#{messages['email']}:</h:outputLabel>
+            <h:inputText id="email" value="#{userBean.newUser.email}" required="true">
+                <f:validator validatorId="emailValidator" />
+            </h:inputText>
+            <h:message for="email" style="color: red" />
+
+            <h:outputLabel for="date_naissance">#{messages['dob']}:</h:outputLabel>
+            <h:inputText id="date_naissance" value="#{userBean.newUser.date_naissance}" required="true">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+            </h:inputText>
+            <h:message for="date_naissance" style="color: red" />
+
+            <h:commandButton value="Submit" action="#{userBean.adduser(userBean.newUser)}" class="btn btn-success"/>
+        </h:form>
+
+        <div class="d-flex justify-content-between mt-3">
+        <h:commandButton value="#{messages['saveChanges']}" action="#{userBean.saveChanges()}" class="btn btn-success"/>
+        <h:commandButton value="#{messages['add']}" action="#{userBean.toggleAddUserForm()}" class="btn btn-primary"/>
+    </div>
+        <div class="d-flex justify-content-between mt-3">
+        <h:commandButton value="Previous" action="#{userBean.previousPage}" class="btn btn-link" disabled="#{userBean.previousButtonDisabled}" />
+        <h:outputText value=" #{userBean.currentPage} / #{userBean.totalRows} " />
+        <h:commandButton value="Next" action="#{userBean.nextPage}" class="btn btn-link" disabled="#{userBean.nextButtonDisabled}" />
+    </div>
+</h:form>
+</h:body>
+</html>
